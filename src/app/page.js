@@ -1,113 +1,137 @@
-import Image from 'next/image'
+"use client";
+
+import Image from "next/image";
+import mobile from "@/assets/images/illustration-sign-up-mobile.svg";
+import desktop from "@/assets/images/illustration-sign-up-desktop.svg";
+import checkmark from "@/assets/images/icon-list.svg";
+import { useFormik } from "formik";
+import Success from "./success";
+import { useState } from "react";
 
 export default function Home() {
+  const [success, setSuccess] = useState(false);
+
+  const validate = (values) => {
+    const errors = {};
+
+    if (!values.email) {
+      errors.email = "Valid email required";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    ) {
+      errors.email = "Valid email required";
+    }
+
+    return errors;
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+    },
+    validate,
+    onSubmit: (values) => {
+      console.log("Form submitted successfully");
+      setSuccess(true);
+    },
+  });
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <>
+      {!success && (
+        <div className="md:bg-slate-900 md:flex md:items-center md:justify-center md:h-screen">
+          <section className="bg-white md:w-[700px] lg:w-[900px] md:flex md:flex-row-reverse md:items-center md:rounded-2xl md:p-8 md:gap-8">
+            <div className="md:hidden">
+              <Image src={mobile} alt="Newsletter" height={250} width={768} />
+            </div>
+
+            <div className="hidden md:block md:flex-1">
+              <Image src={desktop} alt="Newsletter" height={250} width={768} />
+            </div>
+
+            <div className="py-8 px-4 md:flex-1">
+              <h1 className="text-slate-900 font-bold text-4xl lg:text-5xl mb-8">
+                Stay updated!
+              </h1>
+              <p className="mb-8">
+                Join 60,000+ product managers receiving monthly updates on:
+              </p>
+
+              <ul className="flex flex-col gap-4 mb-8">
+                <li className="flex items-start gap-4">
+                  <Image
+                    src={checkmark}
+                    height={20}
+                    width={20}
+                    alt="Checkmark"
+                  />{" "}
+                  Product discovery and building what matters
+                </li>
+                <li className="flex items-start gap-4">
+                  <Image
+                    src={checkmark}
+                    height={20}
+                    width={20}
+                    alt="Checkmark"
+                  />{" "}
+                  Measuring to ensure updates are a success
+                </li>
+                <li className="flex items-start gap-4">
+                  <Image
+                    src={checkmark}
+                    height={20}
+                    width={20}
+                    alt="Checkmark"
+                  />{" "}
+                  And much more!
+                </li>
+              </ul>
+
+              <form onSubmit={formik.handleSubmit} autoComplete="off">
+                <article className="flex items-center justify-between">
+                  <label
+                    htmlFor="email"
+                    className="block text-slate-900 font-bold text-sm mb-2"
+                  >
+                    Email address
+                  </label>
+                  {formik.errors.email ? (
+                    <p className="text-sm text-rose-500 font-bold">
+                      {formik.errors.email}
+                    </p>
+                  ) : null}
+                </article>
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  placeholder="email@company.com"
+                  className={`w-full border rounded-lg py-3 px-4 mb-4 outline-none focus:border-slate-700 ${
+                    formik.errors.email &&
+                    "bg-rose-100 border-rose-400 focus:border-rose-400"
+                  }`}
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                />
+                <button
+                  onClick={formik.handleSubmit}
+                  type="submit"
+                  style={{
+                    backgroundColor: "hsl(234, 29%, 20%)",
+                  }}
+                  className="py-3 p-x4 w-full text-white font-bold hover:bg-gradient-to-r hover:from-pink-500 hover:to-orange-400 rounded-lg"
+                >
+                  Subscribe to monthly newsletter
+                </button>
+              </form>
+            </div>
+          </section>
         </div>
-      </div>
+      )}
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+      {success && (
+        <Success email={formik.values.email} setSuccess={setSuccess} />
+      )}
+    </>
+  );
 }
